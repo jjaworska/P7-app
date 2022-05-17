@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".RulesActivity"
+    android:orientation="vertical">
+
+    <include
+        android:id="@+id/toolbar_rules"
+        layout="@layout/toolbar" />
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" >
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            tools:context=".RulesActivity"
+            android:padding="16dp"
+            android:orientation="vertical"
+            android:gravity="center" >
+
+            <TextView
+                android:textSize="16sp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/rules" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rvNumbers"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:padding="16dp"
+                android:orientation="horizontal" >
+                <TextView
+                    android:textSize="14sp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/xor" />
+                <com.example.p7.CardView
+                    android:id="@+id/xor"
+                    android:layout_width="80dp"
+                    android:layout_height="80dp" />
+            </LinearLayout>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/notaset"
+                android:id="@+id/congrats" />
+
+        </LinearLayout>
+
+    </ScrollView>
+
+</LinearLayout>

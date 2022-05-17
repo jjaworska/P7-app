@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".MainActivity"
+    android:orientation="vertical" >
+
+    <include
+        android:id="@+id/toolbar_main"
+        layout="@layout/toolbar" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:context=".MainActivity"
+        android:padding="16dp"
+        android:orientation="vertical"
+        android:gravity="center" >
+
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="250dp"
+            android:src="@drawable/logo3"
+            android:paddingBottom="30dp" />
+
+        <Button
+            android:id="@+id/gotoSingleplayer"
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:text="@string/singlePlayerButton" />
+
+        <Button
+            android:id="@+id/gotoMultiplayer"
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:text="@string/multiplayerButton" />
+
+        <Button
+            android:id="@+id/gotoHighscores"
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:text="@string/highestScoresButton" />
+
+        <Button
+            android:id="@+id/gotoSettings"
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:text="@string/settingsButton" />
+
+        <Button
+            android:id="@+id/gotoRules"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/rulesButton" />
+    </LinearLayout>
+
+</LinearLayout>

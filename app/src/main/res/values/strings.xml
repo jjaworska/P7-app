@@ -1,0 +1,35 @@
+<resources>
+    <string name="app_name">P7</string>
+    <string name="action_settings">Settings</string>
+    <!-- MainActivity -->
+    <string name="singlePlayerButton">Single Player</string>
+    <string name="multiplayerButton">Multiplayer </string>
+    <string name="highestScoresButton">Highest Scores</string>
+    <string name="settingsButton">Settings</string>
+    <string name="rulesButton">Rules</string>
+    <!-- RulesActivity -->
+    <string name="rules">
+        The goal of this game is collecting sets of four cards in shortest time possible.
+        Each card represents a unique set of colors (hence, there are 128 cards).
+        Four cards are a valid set if every color appears on an even number of these.
+        (In other words, if the symmetric sum (xor) of there four sets is empty).
+        If you are not very familiar with the concept of symmetric sum, feel free to experiment:
+    </string>
+    <string name="xor">The xor of these is:</string>
+    <string name="notaset">Not a set</string>
+    <!-- SettingsActivity -->
+    <string name="highContrast">High Contrast</string>
+    <string name="pastel">Pastel</string>
+    <string name="autumn">Autumn</string>
+    <!-- SinglePlayerActivity -->
+    <string name="paused">Paused</string>
+    <string name="resume">Resume</string>
+    <!-- SinglePlayerFinishActivity -->
+    <string name="home">home</string>
+    <!-- HighestScoresActivity -->
+    <string name="header1">You have spent</string>
+    <string name="footer1">minutes playing P7</string>
+    <string name="header2">In this time</string>
+    <string name="footer2">sets were collected</string>
+    <string name="bestGames">Best games</string>
+</resources>
