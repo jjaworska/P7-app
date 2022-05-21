@@ -6,16 +6,19 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
+import android.os.Message;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
-import com.example.p7.databinding.ActivitySinglePlayerBinding;
+import com.example.p7.databinding.ActivityMultiplayerGameBinding;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -24,7 +27,10 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
-public class SinglePlayerActivity extends AppCompatActivity implements RecyclerAdapter.ItemClickListener {
+import bluetooth.BluetoothChatService;
+import bluetooth.Constants;
+
+public class MultiplayerGameActivity extends AppCompatActivity implements RecyclerAdapter.ItemClickListener {
     final static int NR_OF_CARDS = 12;
     RecyclerAdapter adapter;
     List<CardView> clickedCards = new LinkedList<>();
@@ -37,15 +43,61 @@ public class SinglePlayerActivity extends AppCompatActivity implements RecyclerA
     int firstUnvisibleCard = NR_OF_CARDS;
     Integer [] data;
 
-    private ActivitySinglePlayerBinding binding;
+    private ActivityMultiplayerGameBinding binding;
 
     private MediaPlayer mpClick;
     private MediaPlayer mpSet;
+    private BluetoothChatService mChatService;
+
+    @SuppressLint("HandlerLeak")
+    private final Handler mHandler = new Handler() {
+        @Override
+        public void handleMessage(Message msg) {
+            switch(msg.what) {
+                case Constants.MESSAGE_READ:
+                    byte[] buf = (byte[]) msg.obj;
+                    Log.i("Bluetooth", String.format("received: %d\n",
+                            (int)(buf[0])));
+                    if (buf[0] == Constants.GAME_SETUP) {
+                        data = new Integer[msg.arg1 - 2];
+                        for (int i = 0; i < msg.arg1 - 2; i++) {
+                            data[i] = (int) buf[i + 1];
+                        }
+                        deckSize = data.length;
+                        binding.cardsLeft.setText(String.format("%d cards left in the deck", deckSize - NR_OF_CARDS));
+                        setRecyclerView(Arrays.copyOfRange(data, 0, NR_OF_CARDS));
+                    }
+                    if (buf[0] == Constants.NEW_SET) {
+                        Log.i("Bluetooth", String.format("Very much new set"));
+                        // construct a string from the valid bytes in the buffer
+                        if (MainActivity.soundEffects)
+                            mpSet.start();
+                        setsTaken++;
+                        if (firstUnvisibleCard == deckSize) {
+                            endGame(true);
+                            return;
+                        }
+                        clickedCards.clear();
+                        Log.i("Bluetooth", String.format(
+                                "Received %d %d %d %d", buf[1], buf[2], buf[3], buf[4]
+                        ));
+                        for (CardView cardview : adapter.getVisibleCards()) {
+                            byte x = (byte) cardview.getValue();
+                            for (int i = 0; i < 4; i++)
+                                if (x == buf[i + 1])
+                                    cardview.setValue(data[firstUnvisibleCard + i]);
+                        }
+                        firstUnvisibleCard += 4;
+                        binding.cardsLeft.setText(String.format("%d cards left in the deck", deckSize - firstUnvisibleCard));
+                    }
+            }
+        }
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        binding = ActivitySinglePlayerBinding.inflate(getLayoutInflater());
+        binding = ActivityMultiplayerGameBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
         setSupportActionBar(binding.toolbarSingle.getRoot());
         Utils.dealWithToolbar(binding.toolbarSingle.getRoot(), getApplicationContext());
@@ -57,27 +109,49 @@ public class SinglePlayerActivity extends AppCompatActivity implements RecyclerA
         binding.frame.setMeasureAllChildren(true);
         binding.pause.setVisibility(View.GONE);
 
-        if (MainActivity.gameMode == CardView.P7)
-            deckSize = 128;
-        else
-            deckSize = 64;
-        data = generateSequence();
+        mChatService = MultiplayerActivity.getAdapter();
+        Log.i("Bluetooth", "Updating handler");
+        mChatService.updateHandler(mHandler);
 
-        // TODO: Make sure these are distinct
+        if (mChatService.amIServer()) {
+            /* Wake up the others */
+            mChatService.write(new byte[1]);
+            if (MainActivity.gameMode == CardView.P7)
+                deckSize = 128;
+            else
+                deckSize = 64;
 
-        binding.cardsLeft.setText(String.format("%d cards left in the deck", deckSize - NR_OF_CARDS));
+            data = SinglePlayerActivity.generateSequence();
 
-        RecyclerView recyclerView = binding.rvNumbers;
-        int numberOfColumns = 3;
-        recyclerView.setLayoutManager(new GridLayoutManager(this, numberOfColumns));
-        adapter = new RecyclerAdapter(this, Arrays.copyOfRange(data, 0, NR_OF_CARDS));
-        adapter.setClickListener(this);
-        recyclerView.setAdapter(adapter);
+            binding.cardsLeft.setText(String.format("%d cards left in the deck", deckSize - NR_OF_CARDS));
+
+            setRecyclerView(Arrays.copyOfRange(data, 0, NR_OF_CARDS));
+
+            byte[] setupMsg = new byte[deckSize + 2];
+            setupMsg[0] = Constants.GAME_SETUP;
+            for (int i = 1; i <= deckSize; i++)
+                setupMsg[i] = data[i - 1].byteValue();
+            setupMsg[deckSize + 1] = Constants.END_OF_MESSAGE;
+            Log.i("Bluetooth", "Sending welcome message");
+            sleep(500);
+            mChatService.write(setupMsg);
+        }
 
         mpClick = MediaPlayer.create(this, R.raw.click);
         mpSet = MediaPlayer.create(this, R.raw.set);
 
         runTimer();
+
+        Log.i("MultiplayerGameActivity", mChatService.amIServer() ? "I am server" : "I am not server");
+    }
+
+    private void setRecyclerView(Integer[] values) {
+        RecyclerView recyclerView = binding.rvNumbers;
+        int numberOfColumns = 3;
+        recyclerView.setLayoutManager(new GridLayoutManager(this, numberOfColumns));
+        adapter = new RecyclerAdapter(this, values);
+        adapter.setClickListener(this);
+        recyclerView.setAdapter(adapter);
     }
 
     @Override
@@ -149,7 +223,6 @@ public class SinglePlayerActivity extends AppCompatActivity implements RecyclerA
 
     @Override
     public void onItemClick(View view, int position) {
-
         CardView cv = view.findViewById(R.id.card_image);
         if (cv.isClicked()) {
             clickedCards.remove(cv);
@@ -161,11 +234,20 @@ public class SinglePlayerActivity extends AppCompatActivity implements RecyclerA
         if (MainActivity.soundEffects)
             mpClick.start();
         cv.click();
+        /* SET! */
         if (clickedCards.size() == 4 && xorOfCards == 0) {
             sleep(150);
             if (MainActivity.soundEffects)
                 mpSet.start();
             setsTaken++;
+            /* Inform other players */
+            byte[] msg = new byte[5];
+            msg[0] = Constants.NEW_SET;
+            for (int i = 0; i < 4; i++) {
+                CardView cardview = clickedCards.get(i);
+                msg[i + 1] = (byte) cardview.getValue();
+            }
+            mChatService.write(msg);
             if (firstUnvisibleCard == deckSize) {
                 endGame(true);
                 return;
@@ -174,8 +256,8 @@ public class SinglePlayerActivity extends AppCompatActivity implements RecyclerA
                 clicked.click();
                 clicked.setValue(data[firstUnvisibleCard++]);
             }
-            binding.cardsLeft.setText(String.format("%d cards left in the deck", deckSize - firstUnvisibleCard));
             clickedCards.clear();
+            binding.cardsLeft.setText(String.format("%d cards left in the deck", deckSize - firstUnvisibleCard));
         }
     }
 
@@ -200,18 +282,6 @@ public class SinglePlayerActivity extends AppCompatActivity implements RecyclerA
                 handler.postDelayed(this, 500);
             }
         });
-    }
-
-    public static Integer[] generateSequence() {
-        int ds;
-        if (MainActivity.gameMode == CardView.P7)
-            ds = 128;
-        else
-            ds = 64;
-        List<Integer> helper;
-        helper = IntStream.range(0, ds).boxed().collect(Collectors.toList());
-        Collections.shuffle(helper);
-        return helper.toArray(new Integer[0]);
     }
 
 }

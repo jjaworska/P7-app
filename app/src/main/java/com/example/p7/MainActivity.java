@@ -1,5 +1,6 @@
 package com.example.p7;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -10,6 +11,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.example.p7.databinding.ActivityMainBinding;
 
 import android.view.Menu;
+import android.widget.Button;
 
 import room.ConnectDB;
 
@@ -37,31 +39,20 @@ public class MainActivity extends AppCompatActivity {
         setSupportActionBar(binding.toolbarMain.getRoot());
         Utils.dealWithToolbar(binding.toolbarMain.getRoot(), getApplicationContext());
 
-        binding.gotoSingleplayer.setBackgroundColor(CardView.colors[colorScheme][0]);
-        binding.gotoSingleplayer.setOnClickListener(view -> {
-            Intent intent = new Intent(this, SinglePlayerActivity.class);
-            startActivity(intent);
-        });
-        binding.gotoMultiplayer.setBackgroundColor(CardView.colors[colorScheme][1]);
-        binding.gotoMultiplayer.setOnClickListener(view -> {
-            ConnectDB db = ConnectDB.getDbInstance(getApplicationContext());
-            db.resultDao().clearResults();
-        });
-        binding.gotoHighscores.setBackgroundColor(CardView.colors[colorScheme][3]);
-        binding.gotoHighscores.setOnClickListener(view -> {
-            Intent intent = new Intent(this, HighestScoresActivity.class);
-            startActivity(intent);
-        });
-        binding.gotoSettings.setBackgroundColor(CardView.colors[colorScheme][5]);
-        binding.gotoSettings.setOnClickListener(view -> {
-            Intent intent = new Intent(this, SettingsActivity.class);
-            startActivity(intent);
-        });
-        binding.gotoRules.setBackgroundColor(CardView.colors[colorScheme][6]);
-        binding.gotoRules.setOnClickListener(view -> {
-            Intent intent = new Intent(this, RulesActivity.class);
-            startActivity(intent);
-        });
+        /* to avoid 5-fold repetition */
+        Button[] buttons = {binding.gotoSingleplayer, binding.gotoMultiplayer,
+                binding.gotoHighscores, binding.gotoSettings, binding.gotoRules};
+        Class[] destinations = {SinglePlayerActivity.class, MultiplayerActivity.class,
+                HighestScoresActivity.class, SettingsActivity.class, RulesActivity.class};
+        Integer[] colorIndices = {0, 1, 3, 5, 6};
+        for (int i = 0; i < 5; i++) {
+            buttons[i].setBackgroundColor(CardView.colors[colorScheme][colorIndices[i]]);
+            int finalI = i;
+            buttons[i].setOnClickListener(view -> {
+                Intent intent = new Intent(this, destinations[finalI]);
+                startActivity(intent);
+            });
+        }
     }
 
     @Override
