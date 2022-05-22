@@ -11,7 +11,9 @@ import java.util.List;
 
 import room.Result;
 
+
 public class ResultsAdapter extends RecyclerView.Adapter<ResultsAdapter.ViewHolder> {
+
     private Context context;
     private List<Result> resultList;
 

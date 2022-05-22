@@ -48,6 +48,11 @@ public class SinglePlayerFinishActivity extends AppCompatActivity {
             startActivity(intent);
         });
 
+        /* If the game was multiplayer */
+        if (MultiplayerActivity.getAdapter() != null) {
+            MultiplayerActivity.getAdapter().stop();
+        }
+
         ConnectDB savedResults = ConnectDB.getDbInstance(getApplicationContext());
         Result r = new Result(
             new Date(),

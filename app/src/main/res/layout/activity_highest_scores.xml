@@ -73,7 +73,7 @@
         android:layout_height="wrap_content"
         android:padding="15dp"
         android:textSize="20sp"
-        android:text="@string/bestGames"
+        android:text="@string/best_games"
         android:gravity="center" />
 
     <include
@@ -106,7 +106,7 @@
         android:layout_height="wrap_content"
         android:textColor="@color/white"
         android:gravity="center"
-        android:textOn="Switch to P(6)"
-        android:textOff="Switch to P(7)" />
+        android:textOn="@string/switch_to_p6"
+        android:textOff="@string/switch_to_p7" />
 
 </LinearLayout>

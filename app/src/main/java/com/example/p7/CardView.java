@@ -5,20 +5,23 @@ import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
-import android.graphics.RadialGradient;
-import android.graphics.Shader;
 import android.util.AttributeSet;
 
+import androidx.annotation.NonNull;
+
+
 public class CardView extends androidx.appcompat.widget.AppCompatImageView {
-    // I wanted to use an enum, but it's ugly as well...
+
+    /* Usually constants such as color values should be in a separate xml file,
+     * But in this app they are heavily used in code, so I left them here */
     public static final int HIGH_CONTRAST = 0;
     public static final int PASTEL = 1;
     public static final int AUTUMN = 2;
-    public static boolean P7 = true;
-    public static boolean P6 = false;
-    public static int[][] colors = {
+    public static final boolean P7 = true;
+    public static final boolean P6 = false;
+    public static final int[][] colors = {
     {
-            // High Contrast
+            /* High Contrast */
             Color.parseColor("#ff0000"),
             Color.parseColor("#ff8000"),
             Color.parseColor("#ffff00"),
@@ -27,7 +30,7 @@ public class CardView extends androidx.appcompat.widget.AppCompatImageView {
             Color.parseColor("#0000ff"),
             Color.parseColor("#8000ff"),
     }, {
-            // Pastel
+            /* Pastel */
             Color.parseColor("#ffadad"),
             Color.parseColor("#ffd6a5"),
             Color.parseColor("#fdffb6"),
@@ -36,7 +39,7 @@ public class CardView extends androidx.appcompat.widget.AppCompatImageView {
             Color.parseColor("#a0c4ff"),
             Color.parseColor("#bdb2ff"),
     }, {
-            // Autumn
+            /* Autumn */
             Color.parseColor("#DA557B"),
             Color.parseColor("#F48F5F"),
             Color.parseColor("#EFC956"),
@@ -51,8 +54,8 @@ public class CardView extends androidx.appcompat.widget.AppCompatImageView {
         return Math.round(dp * context.getResources().getDisplayMetrics().density);
     }
 
-    private Canvas cnv;
-    private Paint p;
+    /* properties of a single card */
+    private final Canvas cnv;
     private int val = 0;
     private boolean clicked = false;
 
@@ -64,25 +67,8 @@ public class CardView extends androidx.appcompat.widget.AppCompatImageView {
                 Bitmap.Config.ARGB_8888
         );
         cnv = new Canvas(imageBitmap);
-        p = new Paint();
         this.setImageBitmap(imageBitmap);
         this.setValue(0);
-    }
-
-    /*
-     * this is used in the SettingsActivity
-     */
-    public void demoColorScheme(int nr) {
-        Paint p = new Paint();
-        for (int i = 7; i >= 1; i--) {
-            p.setColor(CardView.colors[nr][i - 1]);
-            this.cnv.drawCircle(
-                    dpToPx(this.getContext(), 45),
-                    dpToPx(this.getContext(), 45),
-                    dpToPx(this.getContext(), (40 * i) / 7),
-                    p
-            );
-        }
     }
 
     public void click() {
@@ -123,16 +109,32 @@ public class CardView extends androidx.appcompat.widget.AppCompatImageView {
             this.cnv.drawCircle(
                     dpToPx(this.getContext(), 45),
                     dpToPx(this.getContext(), 45),
-                    dpToPx(this.getContext(), (40 * i) / 7),
+                    dpToPx(this.getContext(), (float)(40 * i) / 7),
                     p
             );
         }
         this.invalidate();
     }
 
+    /* Used for debug */
+    @NonNull
     @Override
     public String toString() {
         return ((Integer) val).toString();
+    }
+
+    /* This function is used in SettingsActivity */
+    public void demoColorScheme(int nr) {
+        Paint p = new Paint();
+        for (int i = 7; i >= 1; i--) {
+            p.setColor(CardView.colors[nr][i - 1]);
+            this.cnv.drawCircle(
+                    dpToPx(this.getContext(), 45),
+                    dpToPx(this.getContext(), 45),
+                    dpToPx(this.getContext(), (float)(40 * i) / 7),
+                    p
+            );
+        }
     }
 
     public static boolean checkForXor(Integer[] tab) {

@@ -7,14 +7,6 @@
     tools:context=".SinglePlayerActivity"
     android:orientation="vertical">
 
-    <!-- <com.google.android.material.appbar.AppBarLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@drawable/pastel_gradient"
-        android:id="@+id/singleToolbar"
-        android:theme="@style/Theme.P7.AppBarOverlay">
-    </com.google.android.material.appbar.AppBarLayout> -->
-
     <include
         android:id="@+id/toolbar_single"
         android:layout_height="?attr/actionBarSize"

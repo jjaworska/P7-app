@@ -2,11 +2,11 @@
     <string name="app_name">P7</string>
     <string name="action_settings">Settings</string>
     <!-- MainActivity -->
-    <string name="singlePlayerButton">Single Player</string>
-    <string name="multiplayerButton">Multiplayer </string>
-    <string name="highestScoresButton">Highest Scores</string>
-    <string name="settingsButton">Settings</string>
-    <string name="rulesButton">Rules</string>
+    <string name="single_player_button">Single Player</string>
+    <string name="multiplayer_button">Multiplayer </string>
+    <string name="highest_scores_button">Highest Scores</string>
+    <string name="settings_button">Settings</string>
+    <string name="rules_button">Rules</string>
     <!-- RulesActivity -->
     <string name="rules">
         The goal of this game is collecting sets of four cards in shortest time possible.
@@ -18,7 +18,7 @@
     <string name="xor">The xor of these is:</string>
     <string name="notaset">Not a set</string>
     <!-- SettingsActivity -->
-    <string name="highContrast">High Contrast</string>
+    <string name="high_contrast">High Contrast</string>
     <string name="pastel">Pastel</string>
     <string name="autumn">Autumn</string>
     <!-- SinglePlayerActivity -->
@@ -31,5 +31,11 @@
     <string name="footer1">minutes playing P7</string>
     <string name="header2">In this time</string>
     <string name="footer2">sets were collected</string>
-    <string name="bestGames">Best games</string>
+    <string name="best_games">Best games</string>
+    <string name="switch_to_p6">Switch to P(6)</string>
+    <string name="switch_to_p7">Switch to P(7)</string>
+    <!-- MultiplayerActivity -->
+    <string name="type_your_name">Type your name</string>
+    <string name="start">Start!</string>
+    <string name="confirm">confirm</string>
 </resources>

@@ -14,6 +14,7 @@ import android.widget.RadioButton;
 
 import com.example.p7.databinding.ActivitySettingsBinding;
 
+
 public class SettingsActivity extends AppCompatActivity {
 
     private ActivitySettingsBinding binding;
@@ -27,7 +28,6 @@ public class SettingsActivity extends AppCompatActivity {
         binding = ActivitySettingsBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
         settings = getSharedPreferences("settings", Context.MODE_PRIVATE);
-        /*     TOOLBAR     */
         setTitle("Settings");
         setSupportActionBar(binding.toolbarSettings.getRoot());
         Utils.dealWithToolbar(binding.toolbarSettings.getRoot(), getApplicationContext());
@@ -71,19 +71,9 @@ public class SettingsActivity extends AppCompatActivity {
         binding.autumn.demoColorScheme(2);
     }
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch(item.getItemId()) {
-            case android.R.id.home:
-                Intent intent2 = new Intent(this, MainActivity.class);
-                startActivity(intent2);
-                return true;
-        }
-        return false;
-    }
-
+    /*    ColorScheme    */
     public void onRadioButtonClicked(View view) {
-        int newScheme = CardView.HIGH_CONTRAST;
+        int newScheme;
         if (((RadioButton) view).isChecked()) {
             if (binding.radioHighContrast.equals(view))
                 newScheme = CardView.HIGH_CONTRAST;
@@ -101,4 +91,16 @@ public class SettingsActivity extends AppCompatActivity {
             binding.gameModeSwitch.setBackgroundColor(MainActivity.gameMode ? myRed : myPurple);
         }
     }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch(item.getItemId()) {
+            case android.R.id.home:
+                Intent intent2 = new Intent(this, MainActivity.class);
+                startActivity(intent2);
+                return true;
+        }
+        return false;
+    }
+
 }

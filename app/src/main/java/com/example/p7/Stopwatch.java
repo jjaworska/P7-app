@@ -27,6 +27,7 @@ public class Stopwatch {
         int secs = (int) (time / 1000) % 60;
         int mins = (int) (time / 60000) % 60;
         int hrs = (int) (time / 3600000);
+        /* I assume no one would actually play the game for 10 hours */
         return String.format("%01d:%02d:%02d", hrs, mins, secs);
     }
     static public String stringFromSeconds(int seconds) {

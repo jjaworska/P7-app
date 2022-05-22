@@ -16,10 +16,10 @@ public class Result {
     @ColumnInfo(name = "game_mode")
     public Boolean gameMode;
 
-    @ColumnInfo(name="own_sets")
+    @ColumnInfo(name="sets")
     public Integer setsInTotal;
 
-    @ColumnInfo(name="sets")
+    @ColumnInfo(name="own_sets")
     public Integer setsByYourself;
 
     @ColumnInfo(name="time")

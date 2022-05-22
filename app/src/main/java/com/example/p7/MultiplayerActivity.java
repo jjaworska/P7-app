@@ -11,7 +11,10 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
+import android.view.KeyEvent;
+import android.view.MenuItem;
 import android.view.View;
+import android.view.inputmethod.EditorInfo;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -23,7 +26,9 @@ import com.example.p7.databinding.ActivityMultiplayerBinding;
 
 import java.util.Set;
 
+
 public class MultiplayerActivity extends AppCompatActivity {
+
     private static final String TAG = "BluetoothChatFragment";
 
     // Intent request codes
@@ -48,6 +53,8 @@ public class MultiplayerActivity extends AppCompatActivity {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             getSupportActionBar().setDisplayShowHomeEnabled(true);
         }
+        binding.startGame.setVisibility(View.GONE);
+        binding.startGame.setEnabled(false);
         mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
         if (mBluetoothAdapter == null) {
             Toast.makeText(getApplicationContext(), "Bluetooth is not available", Toast.LENGTH_LONG).show();
@@ -79,6 +86,29 @@ public class MultiplayerActivity extends AppCompatActivity {
                 mDevicesAdapter.add(device.getName() + "\n" + device.getAddress());
             }
         }
+        binding.pairedDevicesList.setVisibility(View.INVISIBLE);
+        binding.pairedDevicesList.setEnabled(false);
+
+        binding.confirm.setOnClickListener(v -> {
+            String nick = binding.nick.getText().toString();
+            if (nick.equals("")) {
+                Toast.makeText(
+                        getApplicationContext(),
+                        "Your nick cannot be empty",
+                        Toast.LENGTH_SHORT
+                ).show();
+            } else {
+                mChatService.nick = nick;
+                binding.nick.setEnabled(false);
+                binding.confirm.setEnabled(false);
+                binding.startGame.setEnabled(true);
+                binding.pairedDevicesList.setEnabled(true);
+                Utils.fadeAnimation(binding.confirm, binding.pairedDevicesList, Utils.shortAnimationDuration);
+                Utils.fadeAnimation(binding.nick, binding.startGame, Utils.shortAnimationDuration);
+                binding.startGame.setVisibility(View.VISIBLE);
+            }
+        });
+
         binding.pairedDevicesList.setOnItemClickListener((av, view, arg2, arg3) -> {
             String info = ((TextView) view).getText().toString();
             String address = info.substring(info.length() - 17);
@@ -96,6 +126,28 @@ public class MultiplayerActivity extends AppCompatActivity {
                 startGame();
             }
         });
+        binding.nick.setOnEditorActionListener(mWriteListener);
+    }
+
+    private TextView.OnEditorActionListener mWriteListener
+            = (view, actionId, event) -> {
+                // If the action is a key-up event on the return key, send the message
+                if (actionId == EditorInfo.IME_NULL && event.getAction() == KeyEvent.ACTION_UP) {
+                    String nick = view.getText().toString();
+                    mChatService.nick = nick;
+                }
+                return true;
+            };
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch(item.getItemId()) {
+            case android.R.id.home:
+                Intent intent2 = new Intent(this, MainActivity.class);
+                startActivity(intent2);
+                return true;
+        }
+        return false;
     }
 
     private void startGame() {
@@ -108,9 +160,7 @@ public class MultiplayerActivity extends AppCompatActivity {
         actionBar.setSubtitle(subTitle);
     }
 
-    /**
-     * The Handler that gets information back from the BluetoothChatService
-     */
+    /* The Handler that gets information back from the BluetoothChatService */
     @SuppressLint("HandlerLeak")
     private final Handler mHandler = new Handler() {
         @SuppressLint("HandlerLeak")

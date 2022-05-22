@@ -1,7 +1,6 @@
 package com.example.p7;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -10,7 +9,6 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
 
 import com.example.p7.databinding.ActivityRulesBinding;
 
@@ -20,6 +18,7 @@ import java.util.List;
 
 
 public class RulesActivity extends AppCompatActivity implements RecyclerAdapter.ItemClickListener {
+
     static final int NR_OF_CARDS = 9;
     private RecyclerAdapter adapter;
     private boolean[] wasClicked = new boolean[NR_OF_CARDS];

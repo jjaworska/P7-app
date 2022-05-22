@@ -5,13 +5,13 @@ import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.animation.ArgbEvaluator;
-import android.animation.ValueAnimator;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Toast;
 
 import com.example.p7.databinding.ActivityHighestScoresBinding;
 
@@ -21,6 +21,7 @@ import java.util.List;
 
 import room.ConnectDB;
 import room.Result;
+
 
 public class HighestScoresActivity extends AppCompatActivity {
 
@@ -39,82 +40,84 @@ public class HighestScoresActivity extends AppCompatActivity {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             getSupportActionBar().setDisplayShowHomeEnabled(true);
         }
+
+        ConnectDB db = ConnectDB.getDbInstance(getApplicationContext());
+
+        /*    Otherwise we would get a NullPointerException    */
+        if (db.resultDao().getAnyResult().size() == 0) {
+            Toast.makeText(
+                    getApplicationContext(),
+                    "You don't have any results yet!",
+                    Toast.LENGTH_SHORT
+            ).show();
+            Intent intent = new Intent(this, MainActivity.class);
+            startActivity(intent);
+            return;
+        }
+
+        binding.timeSpentPlaying.setText(Integer.toString(db.resultDao().getTimeSpentPlaying()));
+        binding.setsCollected.setText(Integer.toString(db.resultDao().getSetsCollected()));
+
         binding.headers.dateField.setText("Date");
         binding.headers.dateField.setTextColor(Color.WHITE);
         binding.headers.ownSets.setText("#sets");
         binding.headers.ownSets.setTextColor(Color.WHITE);
         binding.headers.time.setText("Time");
         binding.headers.time.setTextColor(Color.WHITE);
-        ConnectDB db = ConnectDB.getDbInstance(getApplicationContext());
-        binding.timeSpentPlaying.setText(Integer.toString(db.resultDao().getTimeSpentPlaying()));
-        binding.setsCollected.setText(Integer.toString(db.resultDao().getSetsCollected()));
+
+        /*
+         * The code below was rewritten in order to avoid code duplication
+         * All it does is deciding which list of results to display first (P6 or P7)
+         * and programming the transition between these
+         */
+
         /*     RECYCLER VIEWS    */
         DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(this, DividerItemDecoration.VERTICAL);
-        /*     BEST P7 GAMES     */
-        RecyclerView recyclerViewP7 = binding.recyclerViewP7;
-        recyclerViewP7.setLayoutManager(new LinearLayoutManager(this));
-        recyclerViewP7.addItemDecoration(dividerItemDecoration);
-        ResultsAdapter adapterP7 = new ResultsAdapter(getApplicationContext());
-        recyclerViewP7.setAdapter(adapterP7);
-        List<Result> resultListP7 = db.resultDao().bestP7Games();
-        adapterP7.setResultList(resultListP7);
-        /*     BEST P6 GAMES     */
-        RecyclerView recyclerViewP6 = binding.recyclerViewP6;
-        recyclerViewP6.setLayoutManager(new LinearLayoutManager(this));
-        recyclerViewP6.addItemDecoration(dividerItemDecoration);
-        ResultsAdapter adapterP6 = new ResultsAdapter(getApplicationContext());
-        recyclerViewP6.setAdapter(adapterP6);
-        List<Result> resultListP6 = db.resultDao().bestP6Games();
-        adapterP6.setResultList(resultListP6);
-        /*     FRAME LAYOUT     */
-        int myRed = CardView.colors[MainActivity.colorScheme][0];
-        int myPurple = CardView.colors[MainActivity.colorScheme][6];
-        binding.frame.setMeasureAllChildren(true);
-        if (MainActivity.gameMode == CardView.P7) {
-            binding.recyclerViewP6.setVisibility(View.GONE);
-            binding.gameModeSwitch.setChecked(true);
-            binding.gameModeSwitch.setBackgroundColor(myRed);
-            binding.headers.getRoot().setBackgroundColor(myRed);
-        } else {
-            binding.recyclerViewP7.setVisibility(View.GONE);
-            binding.gameModeSwitch.setChecked(false);
-            binding.gameModeSwitch.setBackgroundColor(myPurple);
-            binding.headers.getRoot().setBackgroundColor(myPurple);
+        RecyclerView[] recyclerView = {binding.recyclerViewP6, binding.recyclerViewP7};
+        ResultsAdapter[] adapter = new ResultsAdapter[2];
+        for (int mode = 0; mode < 2; mode++) {
+            recyclerView[mode].setLayoutManager(new LinearLayoutManager(this));
+            recyclerView[mode].addItemDecoration(dividerItemDecoration);
+            adapter[mode] = new ResultsAdapter(getApplicationContext());
+            recyclerView[mode].setAdapter(adapter[mode]);
+            List<Result> results = db.resultDao().bestGames(mode == 1);
+            Log.i("Db", "The results are " + results.toString());
+            adapter[mode].setResultList(results);
         }
+
+        /*     FRAME LAYOUT     */
+        int[] frameColor = {
+                CardView.colors[MainActivity.colorScheme][0],
+                CardView.colors[MainActivity.colorScheme][6]
+        };
+        binding.frame.setMeasureAllChildren(true);
+        int gm = MainActivity.gameMode ? 1 : 0;
+        recyclerView[1 - gm].setVisibility(View.GONE);
+        binding.gameModeSwitch.setChecked(gm == 1);
+        binding.gameModeSwitch.setBackgroundColor(frameColor[1 - gm]);
+        binding.headers.getRoot().setBackgroundColor(frameColor[1 - gm]);
         binding.gameModeSwitch.setOnClickListener(view -> {
             View toForeground, toBackground;
             int colorFrom, colorTo;
-            if (binding.gameModeSwitch.isChecked()) {
-                toForeground = binding.recyclerViewP7;
-                toBackground = binding.recyclerViewP6;
-                colorFrom = myPurple;
-                colorTo = myRed;
-            }
-            else {
-                toForeground = binding.recyclerViewP6;
-                toBackground = binding.recyclerViewP7;
-                colorFrom = myRed;
-                colorTo = myPurple;
-            }
-            Utils.fadeAnimation(toBackground, toForeground, 250);
-            ValueAnimator colorAnimation = ValueAnimator.ofObject(new ArgbEvaluator(), colorFrom, colorTo);
-            colorAnimation.setDuration(250); // milliseconds
-            colorAnimation.addUpdateListener(animator -> {
-                binding.gameModeSwitch.setBackgroundColor((int) animator.getAnimatedValue());
-                binding.headers.getRoot().setBackgroundColor((int) animator.getAnimatedValue());
-            });
-            colorAnimation.start();
+            int state = (binding.gameModeSwitch.isChecked() ? 1 : 0);
+            toForeground = recyclerView[state];
+            toBackground = recyclerView[1 - state];
+            colorFrom = frameColor[state];
+            colorTo = frameColor[1 - state];
+            /* Animation */
+            Utils.fadeAnimation(toBackground, toForeground, Utils.veryShortAnimationDuration);
+            Utils.colorAnimation(binding.gameModeSwitch, colorFrom, colorTo, Utils.veryShortAnimationDuration);
+            Utils.colorAnimation(binding.headers.getRoot(), colorFrom, colorTo, Utils.veryShortAnimationDuration);
 
         });
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        switch(item.getItemId()) {
-            case android.R.id.home:
-                Intent intent2 = new Intent(this, MainActivity.class);
-                startActivity(intent2);
-                return true;
+        if (item.getItemId() == android.R.id.home) {
+            Intent intent2 = new Intent(this, MainActivity.class);
+            startActivity(intent2);
+            return true;
         }
         return false;
     }

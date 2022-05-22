@@ -16,5 +16,8 @@ public interface Constants {
     // GAME LOGIC
     int GAME_SETUP = -1;
     int NEW_SET = -2;
-    int END_OF_MESSAGE = -3;
+    int PAUSE_GAME = -3;
+    int INTRODUCTION = -4;
+    int FINISH_GAME = -5;
+    int END_OF_MESSAGE = -6;
 }

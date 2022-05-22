@@ -2,13 +2,18 @@ package com.example.p7;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
+import android.animation.ArgbEvaluator;
+import android.animation.ValueAnimator;
 import android.content.Context;
 import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.appcompat.widget.Toolbar;
 
+
+/*    A container class for methods responsible for graphics    */
 public class Utils {
+
     private static int getStatusBarHeight(Context context) {
         int result = 0;
         int resourceId = context.getResources().getIdentifier("status_bar_height", "dimen", "android");
@@ -41,22 +46,32 @@ public class Utils {
     }
 
     final static int shortAnimationDuration = 500;
-    static void fadeAnimation(View toForeground, View toBackground, int millis) {
-        toBackground.setAlpha(0f);
-        toBackground.setVisibility(View.VISIBLE);
-        toBackground.animate()
+    final static int veryShortAnimationDuration = 250;
+    static void fadeAnimation(View toBackground, View toForeground, int millis) {
+        toForeground.setAlpha(0f);
+        toForeground.setVisibility(View.VISIBLE);
+        toForeground.animate()
                 .alpha(1f)
                 .setDuration(millis)
                 .setListener(null);
-        toForeground.animate()
+        toBackground.animate()
                 .alpha(0f)
                 .setDuration(millis)
                 .setListener(new AnimatorListenerAdapter() {
                     @Override
                     public void onAnimationEnd(Animator animation) {
-                        toForeground.setVisibility(View.GONE);
+                        toBackground.setVisibility(View.GONE);
                     }
                 });
+    }
+
+    static void colorAnimation(View view, int colorFrom, int colorTo, int millis) {
+        ValueAnimator colorAnimation = ValueAnimator.ofObject(new ArgbEvaluator(), colorFrom, colorTo);
+        colorAnimation.setDuration(250); // milliseconds
+        colorAnimation.addUpdateListener(animator -> {
+            view.setBackgroundColor((int) animator.getAnimatedValue());
+        });
+        colorAnimation.start();
     }
 
 }

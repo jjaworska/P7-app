@@ -28,31 +28,31 @@
             android:id="@+id/gotoSingleplayer"
             android:layout_height="wrap_content"
             android:layout_width="wrap_content"
-            android:text="@string/singlePlayerButton" />
+            android:text="@string/single_player_button" />
 
         <Button
             android:id="@+id/gotoMultiplayer"
             android:layout_height="wrap_content"
             android:layout_width="wrap_content"
-            android:text="@string/multiplayerButton" />
+            android:text="@string/multiplayer_button" />
 
         <Button
             android:id="@+id/gotoHighscores"
             android:layout_height="wrap_content"
             android:layout_width="wrap_content"
-            android:text="@string/highestScoresButton" />
+            android:text="@string/highest_scores_button" />
 
         <Button
             android:id="@+id/gotoSettings"
             android:layout_height="wrap_content"
             android:layout_width="wrap_content"
-            android:text="@string/settingsButton" />
+            android:text="@string/settings_button" />
 
         <Button
             android:id="@+id/gotoRules"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/rulesButton" />
+            android:text="@string/rules_button" />
     </LinearLayout>
 
 </LinearLayout>

@@ -13,9 +13,12 @@ import android.util.Log;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.Arrays;
 import java.util.UUID;
 
+
 public class BluetoothChatService {
+
     // Debugging
     private static final String TAG = "BluetoothChatService";
 
@@ -39,6 +42,7 @@ public class BluetoothChatService {
     private int mState;
     private int mNewState;
     private boolean server;
+    public String nick;
 
     // Constants that indicate the current connection state
     public static final int STATE_NONE = 0;       // we're doing nothing
@@ -439,9 +443,28 @@ public class BluetoothChatService {
                 try {
                     // Read from the InputStream
                     bytes = mmInStream.read(buffer);
+                    int lastDividePoint = 0;
+                    for (int i = 0; i < bytes; i++) {
+                        if (buffer[i] == Constants.END_OF_MESSAGE) {
+                            byte[] toSend = Arrays.copyOfRange(buffer, lastDividePoint, i - 4);
+                            // toSend[toSend.length - 1] = Constants.END_OF_MESSAGE;
+                            /* for (int i = 0; i < 4; i++)
+                                array[offset + i] = (byte) (myId >>> (24 - 8 * i)) */
+                            int senderId = 0;
+                            for (int j = 0; j < 4; j++)
+                                senderId += ((int)(buffer[i - 4 + j]) << (24 - 8 * i));
+                            mHandler.obtainMessage(Constants.MESSAGE_READ, toSend.length, senderId, toSend)
+                                    .sendToTarget();
+                            lastDividePoint = i + 1;
+                        } else if (i == bytes - 1) {
+                            /* for the sake of backwards compatibility... */
+                            byte[] toSend = Arrays.copyOfRange(buffer, lastDividePoint, i + 1);
+                            mHandler.obtainMessage(Constants.MESSAGE_READ, toSend.length, -1, toSend)
+                                    .sendToTarget();
+                            lastDividePoint = i + 1;
+                        }
+                    }
                     // Send the obtained bytes to the UI Activity
-                    mHandler.obtainMessage(Constants.MESSAGE_READ, bytes, -1, buffer)
-                            .sendToTarget();
                 } catch (IOException e) {
                     Log.e(TAG, "disconnected", e);
                     connectionLost();
