@@ -21,11 +21,17 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.P7">
         <activity
+            android:name=".MultiplayerFinishActivity"
+            android:exported="false"
+            android:screenOrientation="portrait" />
+        <activity
             android:name=".MultiplayerGameActivity"
-            android:exported="false" />
+            android:exported="false"
+            android:screenOrientation="portrait" />
         <activity
             android:name=".MultiplayerActivity"
-            android:exported="false" />
+            android:exported="false"
+            android:screenOrientation="portrait" />
         <activity
             android:name=".HighestScoresActivity"
             android:exported="false"

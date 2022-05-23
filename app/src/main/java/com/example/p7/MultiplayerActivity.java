@@ -69,6 +69,13 @@ public class MultiplayerActivity extends AppCompatActivity {
         }
     }
 
+    public static void finishService() {
+        if (mChatService != null) {
+            mChatService.stop();
+            mChatService = null;
+        }
+    }
+
     /* Omitted: fancy onResume */
 
     private void setup() {

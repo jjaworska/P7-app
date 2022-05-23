@@ -13,6 +13,7 @@ import android.util.Log;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.nio.ByteBuffer;
 import java.util.Arrays;
 import java.util.UUID;
 
@@ -99,11 +100,6 @@ public class BluetoothChatService {
             mSecureAcceptThread = new AcceptThread(true);
             mSecureAcceptThread.start();
         }
-        /* if (mInsecureAcceptThread == null) {
-            mInsecureAcceptThread = new AcceptThread(false);
-            mInsecureAcceptThread.start();
-        } */
-        // Update UI title
         updateUserInterfaceTitle();
     }
 
@@ -346,8 +342,6 @@ public class BluetoothChatService {
             BluetoothSocket tmp = null;
             mSocketType = secure ? "Secure" : "Insecure";
 
-            // Get a BluetoothSocket for a connection with the
-            // given BluetoothDevice
             try {
                 if (secure) {
                     tmp = device.createRfcommSocketToServiceRecord(
@@ -367,16 +361,11 @@ public class BluetoothChatService {
             Log.e(TAG, "BEGIN mConnectThread SocketType:" + mSocketType);
             setName("ConnectThread" + mSocketType);
 
-            // Always cancel discovery because it will slow down a connection
             mAdapter.cancelDiscovery();
 
-            // Make a connection to the BluetoothSocket
             try {
-                // This is a blocking call and will only return on a
-                // successful connection or an exception
                 mmSocket.connect();
             } catch (IOException e) {
-                // Close the socket
                 try {
                     mmSocket.close();
                 } catch (IOException e2) {
@@ -443,16 +432,19 @@ public class BluetoothChatService {
                 try {
                     // Read from the InputStream
                     bytes = mmInStream.read(buffer);
+                    Log.i("Bluetooth", "Received message of length " + bytes);
+                    Log.i("Bluetooth", Arrays.toString(Arrays.copyOfRange(buffer, 0, bytes)));
                     int lastDividePoint = 0;
+
                     for (int i = 0; i < bytes; i++) {
+
                         if (buffer[i] == Constants.END_OF_MESSAGE) {
                             byte[] toSend = Arrays.copyOfRange(buffer, lastDividePoint, i - 4);
-                            // toSend[toSend.length - 1] = Constants.END_OF_MESSAGE;
-                            /* for (int i = 0; i < 4; i++)
-                                array[offset + i] = (byte) (myId >>> (24 - 8 * i)) */
                             int senderId = 0;
-                            for (int j = 0; j < 4; j++)
-                                senderId += ((int)(buffer[i - 4 + j]) << (24 - 8 * i));
+                            byte[] idEncoded = Arrays.copyOfRange(buffer, i - 4, i);
+                            ByteBuffer byteBuffer = ByteBuffer.wrap(idEncoded);
+                            senderId = byteBuffer.getInt();
+                            Log.i("Bluetooth", "senderId = " + senderId);
                             mHandler.obtainMessage(Constants.MESSAGE_READ, toSend.length, senderId, toSend)
                                     .sendToTarget();
                             lastDividePoint = i + 1;

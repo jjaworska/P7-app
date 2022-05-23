@@ -80,7 +80,7 @@ public class SinglePlayerActivity extends AppCompatActivity implements RecyclerA
         recyclerView.setAdapter(adapter);
     }
 
-    private void dealWithViews() {
+    public void dealWithViews() {
         ActivitySinglePlayerBinding binding = ActivitySinglePlayerBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
         setSupportActionBar(binding.toolbarSingle.getRoot());
@@ -102,16 +102,13 @@ public class SinglePlayerActivity extends AppCompatActivity implements RecyclerA
     protected void onPause() {
         super.onPause();
         stopwatch.pause();
-        paused = true;
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        if (!paused) {
+        if (!paused)
             stopwatch.resume();
-            paused = true;
-        }
     }
 
     @Override
