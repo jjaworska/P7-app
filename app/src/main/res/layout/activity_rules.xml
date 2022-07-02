@@ -39,17 +39,18 @@
                 android:padding="16dp"
                 android:orientation="horizontal" >
                 <TextView
-                    android:textSize="14sp"
+                    android:textSize="18sp"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/xor" />
-                <com.example.p7.CardView
+                <com.jjaworska.p7.CardView
                     android:id="@+id/xor"
                     android:layout_width="80dp"
                     android:layout_height="80dp" />
             </LinearLayout>
 
             <TextView
+                android:textSize="18sp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/notaset"

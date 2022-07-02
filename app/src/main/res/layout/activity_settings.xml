@@ -78,17 +78,17 @@
                 android:gravity="center"
                 android:padding="5dp"
                 android:orientation="horizontal">
-                <com.example.p7.CardView
+                <com.jjaworska.p7.CardView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:padding="10dp"
                     android:id="@+id/highContrast" />
-                <com.example.p7.CardView
+                <com.jjaworska.p7.CardView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:padding="10dp"
                     android:id="@+id/pastel" />
-                <com.example.p7.CardView
+                <com.jjaworska.p7.CardView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:padding="10dp"

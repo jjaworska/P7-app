@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.example.p7">
+    package="com.jjaworska.p7">
 
     <uses-permission android:name="android.permission.BLUETOOTH" />
     <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
@@ -21,43 +21,42 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.P7">
         <activity
-            android:name=".MultiplayerFinishActivity"
+            android:name="com.jjaworska.p7.MultiplayerFinishActivity"
             android:exported="false"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".MultiplayerGameActivity"
+            android:name="com.jjaworska.p7.MultiplayerGameActivity"
             android:exported="false"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".MultiplayerActivity"
+            android:name="com.jjaworska.p7.MultiplayerActivity"
             android:exported="false"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".HighestScoresActivity"
+            android:name="com.jjaworska.p7.HighestScoresActivity"
             android:exported="false"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".SettingsActivity"
+            android:name="com.jjaworska.p7.SettingsActivity"
             android:exported="false"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".SinglePlayerFinishActivity"
+            android:name="com.jjaworska.p7.SinglePlayerFinishActivity"
             android:exported="false"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".SinglePlayerActivity"
+            android:name="com.jjaworska.p7.SinglePlayerActivity"
             android:exported="false"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.P7.NoActionBar" />
         <activity
-            android:name=".RulesActivity"
+            android:name="com.jjaworska.p7.RulesActivity"
             android:exported="false"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.P7.NoActionBar" />
         <activity
-            android:name=".MainActivity"
+            android:name="com.jjaworska.p7.MainActivity"
             android:exported="true"
-            android:label="@string/app_name"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.P7.NoActionBar">
             <intent-filter>

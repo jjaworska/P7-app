@@ -1,5 +1,5 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:background="@drawable/pastel_gradient"
-    tools:context="com.example.p7.MainActivity">
+    tools:context="com.jjaworska.p7.MainActivity">
 </menu>

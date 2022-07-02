@@ -1,7 +1,7 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    tools:context="com.example.p7.SinglePlayerActivity">
+    tools:context="com.jjaworska.p7.SinglePlayerActivity">
     <item
         android:id="@+id/question"
         android:icon="@drawable/hint"

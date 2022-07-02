@@ -1,7 +1,6 @@
 package room;
 
 import androidx.room.Dao;
-import androidx.room.Delete;
 import androidx.room.Insert;
 import androidx.room.Query;
 
@@ -25,9 +24,7 @@ public interface ResultDao {
     @Query("SELECT SUM(time) / 60 FROM result")
     Integer getTimeSpentPlaying();
 
-    @Delete
-    void delete(Result result);
-
+    /*  used when debugging  */
     @Query("DELETE FROM result")
     void clearResults();
 }

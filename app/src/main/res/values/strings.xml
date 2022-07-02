@@ -1,7 +1,8 @@
 <resources>
-    <string name="app_name">P7</string>
+    <string name="app_name">P(7)</string>
     <string name="action_settings">Settings</string>
     <!-- MainActivity -->
+    <string name="app_logo">app logo</string>
     <string name="single_player_button">Single Player</string>
     <string name="multiplayer_button">Multiplayer </string>
     <string name="highest_scores_button">Highest Scores</string>
@@ -12,7 +13,7 @@
         The goal of this game is collecting sets of four cards in shortest time possible.
         Each card represents a unique set of colors (hence, there are 128 cards).
         Four cards are a valid set if every color appears on an even number of these.
-        (In other words, if the symmetric sum (xor) of there four sets is empty).
+        (In other words, if the symmetric sum (xor) of these four sets is empty).
         If you are not very familiar with the concept of symmetric sum, feel free to experiment:
     </string>
     <string name="xor">The xor of these is:</string>
