@@ -159,12 +159,6 @@ public class SinglePlayerActivity extends AppCompatActivity implements RecyclerA
         return(super.onOptionsItemSelected(item));
     }
 
-    @Override
-    public void onDestroy() {
-        saveProgress();
-        super.onDestroy();
-    }
-
     public void saveProgress() {
         SinglePlayerFinishActivity.updateCounters(
                 mySetsTaken,

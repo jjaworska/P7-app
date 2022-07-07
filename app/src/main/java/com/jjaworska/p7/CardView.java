@@ -5,6 +5,7 @@ import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.PorterDuff;
 import android.util.AttributeSet;
 
 import androidx.annotation.NonNull;
@@ -81,13 +82,21 @@ public class CardView extends androidx.appcompat.widget.AppCompatImageView {
 
     public void click() {
         clicked = !clicked;
-        Paint mPaint = new Paint();
+        /* Paint mPaint = new Paint();
         if (clicked) {
             mPaint.setColor(Color.GRAY);
         } else {
-            mPaint.setColor(Color.WHITE);
+            mPaint.setColor(Color.TRANSPARENT);
         }
-        cnv.drawPaint(mPaint);
+        cnv.drawPaint(mPaint, PorterDuff.Mode.CLEAR); */
+        int color;
+        if (clicked) {
+            color = Color.GRAY;
+            cnv.drawColor(color);
+        } else {
+            color = Color.TRANSPARENT;
+            cnv.drawColor(color, PorterDuff.Mode.CLEAR);
+        }
         this.setValue(this.val);
     }
 

@@ -23,6 +23,7 @@ public class RulesActivity extends AppCompatActivity implements RecyclerAdapter.
     private int clicked = 0;
     private Integer xor_of_cards = 0;
     private Integer[] data = new Integer[NR_OF_CARDS];
+    private int defaultTextColor = 0;
 
     private ActivityRulesBinding binding;
 
@@ -31,6 +32,8 @@ public class RulesActivity extends AppCompatActivity implements RecyclerAdapter.
         super.onCreate(savedInstanceState);
         binding = ActivityRulesBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
+
+        defaultTextColor = binding.congrats.getCurrentTextColor();
 
         setTitle("How to play");
         setSupportActionBar(binding.toolbarRules.getRoot());
@@ -80,7 +83,7 @@ public class RulesActivity extends AppCompatActivity implements RecyclerAdapter.
             binding.congrats.setTextColor(Color.RED);
         } else {
             binding.congrats.setText("Not a set");
-            binding.congrats.setTextColor(Color.BLACK);
+            binding.congrats.setTextColor(defaultTextColor);
         }
     }
 

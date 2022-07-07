@@ -61,6 +61,13 @@ public class SettingsActivity extends AppCompatActivity {
             editor.apply();
         });
 
+        if (MainActivity.colorScheme == CardView.HIGH_CONTRAST)
+            binding.radioHighContrast.setChecked(true);
+        if (MainActivity.colorScheme == CardView.PASTEL)
+            binding.radioPastel.setChecked(true);
+        if (MainActivity.colorScheme == CardView.AUTUMN)
+            binding.radioAutumn.setChecked(true);
+
         binding.highContrast.demoColorScheme(0);
         binding.pastel.demoColorScheme(1);
         binding.autumn.demoColorScheme(2);
